@@ -2,7 +2,7 @@ import axios from 'axios';
 import React from 'react';
 import icon from '../../assets/img/notification-icon.svg';
 import { BASE_URL } from '../../utils/request';
-import { toast } from 'react-toastify/dist/types';
+import { toast } from 'react-toastify';
 import './NotificationButton.css'
 
 class Props {
