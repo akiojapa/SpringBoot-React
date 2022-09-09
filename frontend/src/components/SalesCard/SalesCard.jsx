@@ -4,66 +4,77 @@ import NotificationButton from '../NotificationButton/NotificationButton';
 import './SalesCard.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { BASE_URL } from "../../utils/request";
+import { Sale } from "../../models/Sale.js";
 
 
 const SalesCard = () => {
 
-    const min = new Date(new Date().setDate(new Date().getDate() - 365));
-    const max = new Date();
+  const min = new Date(new Date().setDate(new Date().getDate() - 365));
+  const max = new Date();
+
+  const sale = new Array(Sale);
 
 
-    const [minDate, setMinDate] = useState(new Date(min));
-    const [maxDate, setMaxDate] = useState(new Date(max));
+  const [minDate, setMinDate] = useState(new Date(min));
+  const [maxDate, setMaxDate] = useState(new Date(max));
+
+
+  const [sales, setSales] = useState(sale);
+
 
   useEffect(() => {
-    axios.get("http://localhost:8080/sales").then(response => {
-      console.log(response.data);
+    axios.get(`${BASE_URL}/sales`).then(response => {
+      setSales(response.data.content)
     })
-  
+
   }, []);
 
 
-    return ( 
-        <div className="dsmeta-card">
-            <h2 className="dsmeta-sales-title">Vendas</h2>
-            <div>
-              <div className="dsmeta-form-control-container">
-                <DatePicker 
-                selected={minDate}
-                onChange={(date = Date) => setMinDate(date)}
-                className="dsmeta-form-control"
-                dateFormat={"dd/MM/yyyy"}/>
-              </div>
-              <div className="dsmeta-form-control-container">
-              <DatePicker 
-                selected={maxDate}
-                onChange={(date = Date) => setMaxDate(date)}
-                className="dsmeta-form-control"
-                dateFormat={"dd/MM/yyyy"}/>
-              </div>
-            </div>
+  return (
+    <div className="dsmeta-card">
+      <h2 className="dsmeta-sales-title">Vendas</h2>
+      <div>
+        <div className="dsmeta-form-control-container">
+          <DatePicker
+            selected={minDate}
+            onChange={(date = Date) => setMinDate(date)}
+            className="dsmeta-form-control"
+            dateFormat={"dd/MM/yyyy"} />
+        </div>
+        <div className="dsmeta-form-control-container">
+          <DatePicker
+            selected={maxDate}
+            onChange={(date = Date) => setMaxDate(date)}
+            className="dsmeta-form-control"
+            dateFormat={"dd/MM/yyyy"} />
+        </div>
+      </div>
 
-            <div>
-              <table className="dsmeta-sales-table">
-                <thead>
-                  <tr>
-                    <th className="show992">ID</th>
-                    <th className="show576">Data</th>
-                    <th>Vendedor</th>
-                    <th className="show992">Visitas</th>
-                    <th className="show992">Vendas</th>
-                    <th>Total</th>
-                    <th>Notificar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="show992">#341</td>
-                    <td className="show576">08/07/2022</td>
-                    <td>Anakin</td>
-                    <td className="show992">15</td>
-                    <td className="show992">11</td>
-                    <td>R$ 55300.00</td>
+      <div>
+        <table className="dsmeta-sales-table">
+          <thead>
+            <tr>
+              <th className="show992">ID</th>
+              <th className="show576">Data</th>
+              <th>Vendedor</th>
+              <th className="show992">Visitas</th>
+              <th className="show992">Vendas</th>
+              <th>Total</th>
+              <th>Notificar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              sales.map(sale => {
+                return (
+                  <tr key={sale.id}>
+                    <td className="show992">{sale.id}</td>
+                    <td className="show576">{new Date(sale.date).toLocaleDateString()}</td>
+                    <td>{sale.sellerName}</td>
+                    <td className="show992">{sale.visited}</td>
+                    <td className="show992">{sale.deals}</td>
+                    <td>R$ {sale.amount.toFixed(2)}</td>
                     <td>
                       <div className="dsmeta-red-btn-container">
                         <div className="dsmeta-red-btn">
@@ -72,43 +83,16 @@ const SalesCard = () => {
                       </div>
                     </td>
                   </tr>
-                  <tr>
-                    <td className="show992">#341</td>
-                    <td className="show576">08/07/2022</td>
-                    <td>Anakin</td>
-                    <td className="show992">15</td>
-                    <td className="show992">11</td>
-                    <td>R$ 55300.00</td>
-                    <td>
-                      <div className="dsmeta-red-btn-container">
-                        <div className="dsmeta-red-btn">
-                          <NotificationButton />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="show992">#341</td>
-                    <td className="show576">08/07/2022</td>
-                    <td>Anakin</td>
-                    <td className="show992">15</td>
-                    <td className="show992">11</td>
-                    <td>R$ 55300.00</td>
-                    <td>
-                      <div className="dsmeta-red-btn-container">
-                        <div className="dsmeta-red-btn">
-                          <NotificationButton />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
+                )
+              })
+            }
+          </tbody>
 
-              </table>
-            </div>
+        </table>
+      </div>
 
-          </div>
-     );
+    </div>
+  );
 }
- 
+
 export default SalesCard;
